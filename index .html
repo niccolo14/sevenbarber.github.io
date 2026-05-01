@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seven Barber Shop — Casal Velino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --black:#080808;--white:#f2ede6;--gray:#141414;--gray2:#1e1e1e;--gray3:#2a2a2a;--gray4:#444;
+  --accent:#c9a84c;--accent2:#8a6825;--danger:#c0392b;--success:#27ae60;--warn:#e67e22;
+  --font-title:'Cinzel',serif;--font-body:'Crimson Text',serif;--font-mono:'Space Mono',monospace;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:var(--font-body);font-size:17px;line-height:1.6;cursor:default;overflow-x:hidden;}
+::selection{background:var(--accent);color:var(--black);}
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;}
+input,select,textarea,button{font-family:inherit;font-size:inherit;}
+.view{display:none;}.view.active{display:block;}
+
+/* NAV */
+#nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 5vw;background:linear-gradient(to bottom,rgba(8,8,8,0.98),transparent);}
+.nav-logo{display:flex;align-items:center;gap:1rem;}
+.nav-logo img{height:44px;width:auto;filter:brightness(0) invert(1);}
+.nav-links{display:flex;gap:2.5rem;list-style:none;}
+.nav-links a{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gray4);transition:color 0.25s;}
+.nav-links a:hover,.nav-links a.active{color:var(--accent);}
+.nav-admin-btn{font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;background:transparent;border:1px solid var(--gray3);color:var(--gray4);padding:0.5rem 1.2rem;transition:all 0.25s;}
+.nav-admin-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 5vw 7rem;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 65% 40%,rgba(201,168,76,0.07) 0%,transparent 70%),repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,0.013) 60px,rgba(255,255,255,0.013) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.013) 60px,rgba(255,255,255,0.013) 61px);}
+.hero-logo-big{position:absolute;top:50%;right:5vw;transform:translateY(-55%);opacity:0.06;width:min(55vw,700px);pointer-events:none;filter:brightness(0) invert(1);}
+.hero-tag{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;}
+.hero-tag::before{content:'';width:40px;height:1px;background:var(--accent);}
+.hero-h1{font-family:var(--font-title);font-size:clamp(3.5rem,10vw,9rem);letter-spacing:0.08em;line-height:0.95;font-weight:700;}
+.hero-h1 .ghost{display:block;color:transparent;-webkit-text-stroke:1px rgba(242,237,230,0.18);}
+.hero-desc{margin-top:2.5rem;font-style:italic;font-size:1.15rem;color:rgba(242,237,230,0.45);max-width:380px;line-height:1.7;}
+.hero-actions{margin-top:2.5rem;display:flex;gap:1.5rem;align-items:center;}
+.btn-primary{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;background:var(--accent);color:var(--black);border:none;padding:1rem 2.5rem;transition:background 0.25s,transform 0.15s;}
+.btn-primary:hover{background:var(--white);transform:translateY(-1px);}
+.btn-ghost{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;background:transparent;color:var(--gray4);border:1px solid var(--gray3);padding:1rem 2rem;transition:all 0.25s;}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.hero-scroll{position:absolute;right:5vw;bottom:5rem;display:flex;flex-direction:column;align-items:center;gap:0.75rem;}
+.hero-scroll span{font-family:var(--font-mono);font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray4);writing-mode:vertical-rl;}
+.scroll-line{width:1px;height:70px;background:linear-gradient(to bottom,var(--gray4),transparent);animation:sline 2s ease-in-out infinite;}
+@keyframes sline{0%,100%{opacity:0.3;}50%{opacity:1;}}
+
+/* SECTIONS */
+.section{padding:8rem 5vw;}
+.sec-label{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--accent);margin-bottom:4rem;display:flex;align-items:center;gap:1.2rem;}
+.sec-label::after{content:'';height:1px;width:50px;background:var(--accent2);}
+.sec-title{font-family:var(--font-title);font-size:clamp(2.2rem,4vw,3.5rem);letter-spacing:0.06em;line-height:1.05;margin-bottom:2rem;font-weight:700;}
+
+/* ABOUT */
+.about{background:var(--black);}
+.about-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:8rem;align-items:start;}
+.about-body{font-size:1.05rem;color:rgba(242,237,230,0.55);line-height:1.85;margin-bottom:1.5rem;}
+.stats-col{padding-top:3rem;display:flex;flex-direction:column;gap:0;}
+.stat-row{border-top:1px solid var(--gray2);padding:1.5rem 0;display:flex;align-items:baseline;gap:1.5rem;}
+.stat-n{font-family:var(--font-title);font-size:2.8rem;color:var(--accent);letter-spacing:0.04em;}
+.stat-l{font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray4);line-height:1.5;}
+
+/* SERVICES */
+.services-section{background:var(--gray);}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--gray3);border:1px solid var(--gray3);}
+.srv-card{background:var(--gray);padding:2.5rem 2rem;position:relative;overflow:hidden;transition:background 0.3s;}
+.srv-card:hover{background:var(--gray2);}
+.srv-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform 0.35s;}
+.srv-card:hover::after{transform:scaleX(1);}
+.srv-n{font-family:var(--font-mono);font-size:0.5rem;letter-spacing:0.2em;color:var(--gray4);margin-bottom:1.5rem;}
+.srv-name{font-family:var(--font-title);font-size:1.3rem;letter-spacing:0.06em;margin-bottom:0.6rem;}
+.srv-desc{font-size:0.9rem;color:rgba(242,237,230,0.4);line-height:1.7;margin-bottom:1.5rem;}
+.srv-price{font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.08em;color:var(--accent);}
+.srv-duration{font-family:var(--font-mono);font-size:0.5rem;letter-spacing:0.08em;color:var(--gray4);margin-top:0.3rem;}
+
+/* BOOKING SECTION */
+.book-section{background:var(--black);}
+.book-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:6rem;align-items:start;}
+.book-info .sec-title{margin-bottom:1rem;}
+.book-info p{font-style:italic;font-size:1.05rem;color:rgba(242,237,230,0.45);line-height:1.8;margin-bottom:2rem;}
+.book-info-item{display:flex;gap:1rem;align-items:flex-start;padding:1rem 0;border-top:1px solid var(--gray2);font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;color:var(--gray4);}
+.book-info-item strong{color:var(--accent);display:block;margin-bottom:0.2rem;}
+
+/* SLOT PICKER */
+.slot-picker{display:flex;flex-direction:column;gap:1.5rem;}
+.slot-top{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--gray3);}
+.slot-field{background:var(--black);padding:1.2rem 1.5rem;}
+.slot-label{display:block;font-family:var(--font-mono);font-size:0.5rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gray4);margin-bottom:0.5rem;}
+.f-select,.f-input,.f-textarea{width:100%;background:transparent;border:none;border-bottom:1px solid var(--gray3);color:var(--white);font-family:var(--font-body);font-size:1rem;padding:0.4rem 0;outline:none;transition:border-color 0.25s;-webkit-appearance:none;}
+.f-select:focus,.f-input:focus,.f-textarea:focus{border-color:var(--accent);}
+.f-select option{background:var(--gray);color:var(--white);}
+.f-textarea{resize:none;height:60px;}
+
+/* DAYS STRIP */
+.days-strip-wrap{overflow-x:auto;padding-bottom:0.5rem;}
+.days-strip{display:flex;gap:2px;min-width:max-content;}
+.day-btn{
+  background:var(--gray);border:none;color:var(--white);
+  font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.08em;text-transform:uppercase;
+  padding:0.9rem 1rem;min-width:70px;text-align:center;transition:all 0.2s;
+  display:flex;flex-direction:column;gap:0.3rem;cursor:pointer;
+}
+.day-btn .dname{font-size:0.48rem;color:var(--gray4);}
+.day-btn .dnum{font-size:1rem;font-family:var(--font-title);}
+.day-btn:hover:not(.closed-day-btn):not(.selected-day){background:var(--gray2);}
+.day-btn.selected-day{background:var(--accent);color:var(--black);}
+.day-btn.selected-day .dname{color:rgba(0,0,0,0.6);}
+.day-btn.closed-day-btn{opacity:0.3;cursor:not-allowed;background:var(--gray);}
+
+/* TIMES GRID */
+.times-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--gray3);}
+.time-btn{
+  background:var(--gray);border:none;color:var(--white);
+  font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.06em;
+  padding:0.75rem 0.5rem;text-align:center;transition:all 0.2s;cursor:pointer;
+}
+.time-btn:hover:not(.sold-out):not(.break-slot){background:var(--gray2);}
+.time-btn.selected-time{background:var(--accent);color:var(--black);}
+.time-btn.sold-out{opacity:0.35;cursor:not-allowed;position:relative;text-decoration:line-through;}
+.time-btn.break-slot{opacity:0.2;cursor:not-allowed;font-size:0.48rem;letter-spacing:0.05em;}
+.times-empty{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;color:var(--gray4);padding:2rem;text-align:center;background:var(--gray);grid-column:1/-1;}
+
+.slot-bottom{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--gray3);}
+.slot-notes{background:var(--black);padding:1.2rem 1.5rem;grid-column:1/-1;}
+.slot-submit{background:var(--accent);border:none;color:var(--black);font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;padding:1.6rem;width:100%;transition:background 0.25s;grid-column:1/-1;}
+.slot-submit:hover{background:var(--white);}
+.book-msg{display:none;margin-top:2px;background:var(--gray2);border-left:3px solid var(--accent);padding:2rem;font-style:italic;color:rgba(242,237,230,0.7);}
+.book-msg.show{display:block;}
+
+/* HOURS */
+.hours-section{background:var(--gray);}
+.hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;}
+.hour-row{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-bottom:1px solid var(--gray2);}
+.hour-day{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(242,237,230,0.4);}
+.hour-time{font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.05em;}
+.hour-time.closed{color:var(--gray4);}
+.contact-list{margin-top:3rem;display:flex;flex-direction:column;gap:1rem;}
+.contact-item{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;color:rgba(242,237,230,0.35);}
+.contact-item a{color:var(--accent);}
+
+/* FOOTER */
+footer{background:var(--black);border-top:1px solid var(--gray2);padding:3rem 5vw;display:flex;justify-content:space-between;align-items:center;}
+.footer-logo{font-family:var(--font-title);font-size:4rem;letter-spacing:0.3em;color:rgba(242,237,230,0.04);line-height:1;}
+.footer-copy{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.15em;color:var(--gray4);}
+
+/* LOADER */
+#overlay{position:fixed;inset:0;background:var(--black);z-index:999;display:flex;align-items:center;justify-content:center;animation:ovOut 0.7s ease-out 1s forwards;pointer-events:none;}
+#overlay img{height:80px;filter:brightness(0) invert(1);animation:logoIn 0.5s ease-out 0.2s both;}
+@keyframes ovOut{to{opacity:0;}}
+@keyframes logoIn{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
+
+/* ADMIN */
+#admin-view{display:none;min-height:100vh;background:var(--black);}
+#admin-view.active{display:block;}
+#admin-login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--black);}
+.login-box{background:var(--gray);border:1px solid var(--gray3);padding:3rem;width:min(400px,90vw);}
+.login-box h2{font-family:var(--font-title);font-size:1.5rem;letter-spacing:0.1em;margin-bottom:0.5rem;}
+.login-box p{font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.15em;color:var(--gray4);margin-bottom:2rem;}
+.login-err{display:none;font-family:var(--font-mono);font-size:0.6rem;color:var(--danger);margin-top:1rem;}
+.login-err.show{display:block;}
+#admin-shell{display:none;}
+#admin-shell.active{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+.admin-sidebar{background:var(--gray);border-right:1px solid var(--gray3);padding:2rem 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.sidebar-logo{padding:0 1.5rem 2rem;border-bottom:1px solid var(--gray3);margin-bottom:1.5rem;display:flex;align-items:center;gap:0.8rem;}
+.sidebar-logo img{height:32px;filter:brightness(0) invert(1);}
+.sidebar-logo span{font-family:var(--font-title);font-size:0.7rem;letter-spacing:0.15em;color:var(--gray4);}
+.sidebar-nav{display:flex;flex-direction:column;gap:2px;flex:1;padding:0 0.75rem;}
+.s-btn{background:transparent;border:none;color:var(--gray4);font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.85rem 1rem;text-align:left;border-radius:2px;transition:all 0.2s;display:flex;align-items:center;gap:0.75rem;}
+.s-btn:hover{background:var(--gray2);color:var(--white);}
+.s-btn.active{background:var(--accent);color:var(--black);}
+.sidebar-footer{padding:1.5rem;border-top:1px solid var(--gray3);}
+.s-logout{background:transparent;border:1px solid var(--gray3);color:var(--gray4);font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.7rem 1.2rem;width:100%;transition:all 0.2s;}
+.s-logout:hover{border-color:var(--danger);color:var(--danger);}
+.admin-main{background:var(--black);padding:2.5rem;overflow-y:auto;}
+.admin-page{display:none;}
+.admin-page.active{display:block;}
+.admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--gray2);}
+.admin-header h1{font-family:var(--font-title);font-size:1.6rem;letter-spacing:0.08em;}
+.admin-header span{font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.15em;color:var(--gray4);}
+.admin-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--gray3);margin-bottom:2rem;}
+.admin-card{background:var(--gray);padding:1.5rem;}
+.admin-card .label{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray4);margin-bottom:0.5rem;}
+.admin-card .value{font-family:var(--font-title);font-size:2rem;letter-spacing:0.05em;}
+.admin-card .value.accent{color:var(--accent);}
+.admin-card .value.danger{color:var(--danger);}
+.admin-card .value.warn{color:var(--warn);}
+.admin-card .value.success{color:var(--success);}
+.admin-table-wrap{background:var(--gray);border:1px solid var(--gray3);overflow:hidden;margin-bottom:1.5rem;}
+.table-head{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid var(--gray3);}
+.table-head h3{font-family:var(--font-title);font-size:0.9rem;letter-spacing:0.08em;}
+.table-filters{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.filter-btn{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;background:transparent;border:1px solid var(--gray3);color:var(--gray4);padding:0.4rem 0.9rem;transition:all 0.2s;}
+.filter-btn.active,.filter-btn:hover{border-color:var(--accent);color:var(--accent);}
+.admin-table{width:100%;border-collapse:collapse;}
+.admin-table th{font-family:var(--font-mono);font-size:0.5rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gray4);padding:0.8rem 1.2rem;text-align:left;border-bottom:1px solid var(--gray3);background:var(--gray2);}
+.admin-table td{padding:0.9rem 1.2rem;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.88rem;vertical-align:middle;}
+.admin-table tr:hover td{background:rgba(255,255,255,0.02);}
+.badge{display:inline-block;font-family:var(--font-mono);font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.25rem 0.7rem;}
+.badge.pending{background:rgba(230,126,34,0.15);color:var(--warn);border:1px solid rgba(230,126,34,0.3);}
+.badge.confirmed{background:rgba(39,174,96,0.15);color:var(--success);border:1px solid rgba(39,174,96,0.3);}
+.badge.rejected{background:rgba(192,57,43,0.15);color:var(--danger);border:1px solid rgba(192,57,43,0.3);}
+.badge.past{background:rgba(100,100,100,0.15);color:var(--gray4);border:1px solid rgba(100,100,100,0.3);}
+.badge.expiring{background:rgba(192,57,43,0.12);color:#e08080;border:1px solid rgba(192,57,43,0.25);}
+.action-btns{display:flex;gap:0.4rem;flex-wrap:wrap;}
+.act-btn{font-family:var(--font-mono);font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;background:transparent;border:1px solid var(--gray3);color:var(--gray4);padding:0.3rem 0.7rem;transition:all 0.2s;}
+.act-btn.confirm:hover{border-color:var(--success);color:var(--success);}
+.act-btn.reject:hover{border-color:var(--danger);color:var(--danger);}
+.act-btn.calendar:hover{border-color:var(--accent);color:var(--accent);}
+.act-btn.del:hover{border-color:var(--danger);color:var(--danger);}
+
+/* SETTINGS */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
+.settings-card{background:var(--gray);border:1px solid var(--gray3);padding:2rem;}
+.settings-card h3{font-family:var(--font-title);font-size:1rem;letter-spacing:0.08em;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--gray3);}
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.setting-label{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;color:rgba(242,237,230,0.6);}
+.edit-field{background:var(--gray2);border:1px solid var(--gray3);color:var(--white);font-family:var(--font-mono);font-size:0.62rem;padding:0.35rem 0.6rem;outline:none;transition:border-color 0.2s;width:120px;}
+.edit-field:focus{border-color:var(--accent);}
+.save-btn{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;background:var(--accent);color:var(--black);border:none;padding:0.5rem 1.2rem;margin-top:1.2rem;transition:background 0.2s;}
+.save-btn:hover{background:var(--white);}
+.add-btn{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;background:transparent;color:var(--accent);border:1px solid var(--accent2);padding:0.5rem 1.2rem;transition:all 0.2s;}
+.add-btn:hover{background:var(--accent);color:var(--black);}
+
+/* TOGGLE */
+.toggle{position:relative;width:40px;height:20px;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--gray3);transition:0.3s;border-radius:20px;}
+.toggle-slider::before{content:'';position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:var(--gray4);transition:0.3s;border-radius:50%;}
+.toggle input:checked+.toggle-slider{background:var(--accent);}
+.toggle input:checked+.toggle-slider::before{transform:translateX(20px);background:var(--black);}
+
+/* DAY TAGS */
+.day-tags{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;}
+.day-tag{font-family:var(--font-mono);font-size:0.5rem;letter-spacing:0.1em;background:var(--gray2);border:1px solid var(--gray3);color:var(--white);padding:0.3rem 0.7rem;display:flex;align-items:center;gap:0.4rem;}
+.day-tag .rm{color:var(--danger);background:none;border:none;font-size:0.7rem;line-height:1;cursor:pointer;padding:0;}
+.day-tag.closed-day{border-color:var(--danger);color:var(--danger);}
+
+/* MANUAL FORM */
+.manual-form{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.manual-form .f-field-a{display:flex;flex-direction:column;gap:0.4rem;}
+.manual-form .full{grid-column:1/-1;}
+.m-label{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gray4);}
+.m-input,.m-select,.m-textarea{background:var(--gray2);border:1px solid var(--gray3);color:var(--white);font-family:var(--font-body);font-size:0.95rem;padding:0.6rem 0.8rem;outline:none;transition:border-color 0.2s;width:100%;-webkit-appearance:none;}
+.m-input:focus,.m-select:focus,.m-textarea:focus{border-color:var(--accent);}
+.m-select option{background:var(--gray);}
+.m-textarea{resize:none;height:60px;}
+
+/* BARBERS */
+.barber-list{display:flex;flex-direction:column;gap:1px;background:var(--gray3);margin-bottom:1rem;}
+.barber-row{background:var(--gray2);padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem;}
+.barber-row .b-name{flex:1;font-family:var(--font-title);font-size:0.95rem;letter-spacing:0.05em;}
+.barber-row .b-role{font-family:var(--font-mono);font-size:0.52rem;color:var(--gray4);min-width:100px;}
+.barber-active{display:flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.5rem;color:var(--gray4);}
+
+/* SERVICES ADMIN */
+.srv-admin-list{display:flex;flex-direction:column;gap:1px;background:var(--gray3);}
+.srv-admin-row{background:var(--gray2);padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem;}
+.srv-admin-row .name{flex:1;font-family:var(--font-title);font-size:0.9rem;letter-spacing:0.05em;}
+.srv-admin-row .price{font-family:var(--font-mono);font-size:0.62rem;color:var(--accent);min-width:80px;}
+.srv-admin-row .dur{font-family:var(--font-mono);font-size:0.55rem;color:var(--gray4);min-width:70px;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--gray);border:1px solid var(--gray3);padding:2.5rem;width:min(550px,90vw);max-height:90vh;overflow-y:auto;}
+.modal h2{font-family:var(--font-title);font-size:1.3rem;letter-spacing:0.08em;margin-bottom:1.5rem;}
+.modal-close{float:right;background:none;border:none;color:var(--gray4);font-size:1.2rem;cursor:pointer;margin-top:-0.3rem;}
+.modal-close:hover{color:var(--danger);}
+.modal-actions{display:flex;gap:0.75rem;margin-top:1.5rem;}
+
+/* NOTIFICATION */
+.notif{position:fixed;top:5rem;right:2rem;z-index:800;background:var(--gray);border-left:3px solid var(--accent);padding:1rem 1.5rem;max-width:300px;font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.08em;opacity:0;transform:translateX(20px);transition:all 0.3s;pointer-events:none;}
+.notif.show{opacity:1;transform:translateX(0);}
+.notif.danger{border-color:var(--danger);}
+.notif.success{border-color:var(--success);}
+
+/* STATUS CHECK */
+.status-section{background:var(--black);}
+.status-lookup{display:flex;gap:2px;background:var(--gray3);max-width:500px;margin-bottom:3rem;}
+.status-lookup input{flex:1;background:var(--black);border:none;color:var(--white);font-family:var(--font-mono);font-size:0.85rem;letter-spacing:0.15em;padding:1.2rem 1.5rem;outline:none;text-transform:uppercase;}
+.status-lookup input::placeholder{color:var(--gray4);letter-spacing:0.1em;font-size:0.7rem;}
+.status-lookup button{background:var(--accent);border:none;color:var(--black);font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;padding:1.2rem 2rem;transition:background 0.2s;}
+.status-lookup button:hover{background:var(--white);}
+.status-card{background:var(--gray);border:1px solid var(--gray3);padding:2.5rem;max-width:500px;display:none;}
+.status-card.show{display:block;}
+.status-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--gray3);}
+.status-name{font-family:var(--font-title);font-size:1.4rem;letter-spacing:0.06em;}
+.status-rows{display:flex;flex-direction:column;gap:0;}
+.status-row{display:flex;justify-content:space-between;padding:0.85rem 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.status-row-label{font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gray4);}
+.status-row-val{font-family:var(--font-mono);font-size:0.65rem;color:var(--white);}
+.status-big{margin-top:2rem;padding:1.5rem;text-align:center;}
+.status-icon{font-size:2.5rem;margin-bottom:0.75rem;}
+.status-text-pending{font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.12em;color:var(--warn);}
+.status-text-confirmed{font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.12em;color:var(--success);}
+.status-text-rejected{font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.12em;color:var(--danger);}
+.status-err{font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--danger);padding:1rem 0;display:none;}
+.status-err.show{display:block;}
+.code-box{background:var(--gray2);border:1px solid var(--accent2);padding:2rem;text-align:center;}
+.code-label{font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray4);margin-bottom:0.75rem;}
+.code-value{font-family:var(--font-mono);font-size:1.8rem;letter-spacing:0.3em;color:var(--accent);font-weight:700;}
+.code-hint{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.1em;color:var(--gray4);margin-top:0.75rem;line-height:1.6;}
+.gcal-link-btn{display:inline-flex;align-items:center;gap:0.75rem;margin-top:1.5rem;background:transparent;border:1px solid var(--accent2);color:var(--accent);font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.75rem 1.5rem;cursor:pointer;transition:all 0.2s;text-decoration:none;}
+.gcal-link-btn:hover{background:var(--accent);color:var(--black);}
+
+  .about-grid,.hours-grid,.book-layout,.settings-grid{grid-template-columns:1fr;gap:3rem;}
+  .services-grid,.manual-form{grid-template-columns:1fr 1fr;}
+  #admin-shell.active{grid-template-columns:1fr;}
+  .admin-sidebar{height:auto;position:relative;}
+  .admin-cards{grid-template-columns:1fr 1fr;}
+  .times-grid{grid-template-columns:repeat(3,1fr);}
+}
+@media(max-width:600px){
+  .services-grid,.manual-form,.admin-cards,.slot-top,.slot-bottom{grid-template-columns:1fr;}
+  .nav-links{display:none;}
+  .times-grid{grid-template-columns:repeat(3,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div id="overlay"><img src="/mnt/user-data/uploads/Seven-Carmine-Logo_jpg.jpeg" alt="Seven"></div>
+<div class="notif" id="notif"></div>
+
+<!-- ======================== PUBLIC ======================== -->
+<div class="view active" id="public-view">
+  <nav id="nav">
+    <a class="nav-logo" href="#"><img src="/mnt/user-data/uploads/Seven-Carmine-Logo_jpg.jpeg" alt="Seven Barber Shop"></a>
+    <ul class="nav-links">
+      <li><a href="#about" class="nav-link">Studio</a></li>
+      <li><a href="#services" class="nav-link">Servizi</a></li>
+      <li><a href="#book" class="nav-link">Prenota</a></li>
+      <li><a href="#stato" class="nav-link">Stato</a></li>
+      <li><a href="#hours" class="nav-link">Orari</a></li>
+    </ul>
+    <button class="nav-admin-btn" onclick="showAdmin()">Admin →</button>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <img class="hero-logo-big" src="/mnt/user-data/uploads/Seven-Carmine-Logo_jpg.jpeg" alt="">
+    <div class="hero-tag">Est. 2026 — Casal Velino</div>
+    <h1 class="hero-h1">SEVEN<br><span class="ghost">BARBER</span></h1>
+    <p class="hero-desc">Il taglio perfetto non è un caso. È un'arte che si impara, si affina, si rispetta.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('book').scrollIntoView({behavior:'smooth'})">Prenota ora</button>
+      <button class="btn-ghost" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">Servizi</button>
+    </div>
+    <div class="hero-scroll"><div class="scroll-line"></div><span>Scroll</span></div>
+  </section>
+
+  <section class="section about" id="about">
+    <div class="sec-label">Lo Studio</div>
+    <div class="about-grid">
+      <div>
+        <h2 class="sec-title">TAGLIO.<br>RITUALE.<br>IDENTITÀ.</h2>
+        <p class="about-body">Seven Barber Shop nasce dalla passione per il dettaglio e il rispetto per la tradizione barbiera. Un posto dove ogni visita è un'esperienza, non solo un servizio.</p>
+        <p class="about-body">Solo su appuntamento. Solo precisione. Solo il meglio.</p>
+      </div>
+      <div class="stats-col">
+        <div class="stat-row"><div class="stat-n">8+</div><div class="stat-l">Anni di<br>esperienza</div></div>
+        <div class="stat-row"><div class="stat-n">2K</div><div class="stat-l">Clienti<br>fidelizzati</div></div>
+        <div class="stat-row"><div class="stat-n">01</div><div class="stat-l">Solo<br>appuntamenti</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section services-section" id="services">
+    <div class="sec-label">Servizi</div>
+    <div class="services-grid" id="services-grid"></div>
+  </section>
+
+  <section class="section book-section" id="book">
+    <div class="sec-label">Prenotazione</div>
+    <div class="book-layout">
+      <div class="book-info">
+        <h2 class="sec-title">PRENOTA<br>IL TUO<br>SLOT</h2>
+        <p>Solo su appuntamento. La tua richiesta verrà valutata e confermata dal team. Potrai aggiungere l'appuntamento al tuo Google Calendar.</p>
+        <div class="book-info-item"><div><strong>Risposta</strong>Entro poche ore</div></div>
+        <div class="book-info-item"><div><strong>Disdetta</strong>Almeno 24h prima</div></div>
+        <div class="book-info-item"><div><strong>Luogo</strong><span id="pub-address">Via Toledo 100, Napoli</span></div></div>
+      </div>
+      <div id="booking-form-container">
+        <form class="slot-picker" id="pubBookForm" onsubmit="submitPublicBooking(event)">
+          <!-- Step 1: service + barber -->
+          <div class="slot-top">
+            <div class="slot-field">
+              <label class="slot-label">Servizio *</label>
+              <select class="f-select" id="pb-service" required onchange="onServiceChange()">
+                <option value="" disabled selected>Seleziona</option>
+              </select>
+            </div>
+            <div class="slot-field">
+              <label class="slot-label">Barbiere</label>
+              <select class="f-select" id="pb-barber">
+                <option value="">Nessuna preferenza</option>
+              </select>
+            </div>
+          </div>
+          <!-- Step 2: day picker -->
+          <div>
+            <div style="font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray4);margin-bottom:0.75rem;">Scegli il giorno</div>
+            <div class="days-strip-wrap"><div class="days-strip" id="days-strip"></div></div>
+          </div>
+          <!-- Step 3: time grid -->
+          <div>
+            <div style="font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray4);margin-bottom:0.75rem;">Scegli l'orario</div>
+            <div class="times-grid" id="times-grid"><div class="times-empty">Seleziona prima un giorno</div></div>
+          </div>
+          <!-- Hidden fields -->
+          <input type="hidden" id="pb-date">
+          <input type="hidden" id="pb-time">
+          <!-- Step 4: personal info + submit -->
+          <div class="slot-bottom">
+            <div class="slot-field"><label class="slot-label">Nome *</label><input class="f-input" id="pb-name" required placeholder="Il tuo nome"></div>
+            <div class="slot-field"><label class="slot-label">Telefono *</label><input class="f-input" id="pb-phone" type="tel" required placeholder="+39 ..."></div>
+            <div class="slot-notes"><label class="slot-label">Note (opzionale)</label><textarea class="f-textarea" id="pb-notes" placeholder="Richieste, riferimenti..."></textarea></div>
+            <button type="submit" class="slot-submit">Invia Richiesta →</button>
+          </div>
+        </form>
+        <div class="book-msg" id="book-success">
+          <div class="code-box" id="booking-code-box">
+            <div class="code-label">✦ Richiesta inviata — Il tuo codice prenotazione</div>
+            <div class="code-value" id="booking-code-display">——</div>
+            <div class="code-hint">Salva questo codice. Usalo nella sezione "Controlla Stato" per verificare se la prenotazione è stata confermata.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section status-section" id="stato">
+    <div class="sec-label">Stato Prenotazione</div>
+    <div style="max-width:600px;">
+      <h2 class="sec-title" style="margin-bottom:1rem;">CONTROLLA<br>IL TUO<br>STATO</h2>
+      <p style="font-style:italic;font-size:1.05rem;color:rgba(242,237,230,0.45);line-height:1.8;margin-bottom:2.5rem;">Inserisci il codice che hai ricevuto dopo aver inviato la richiesta per vedere se è stata confermata o rifiutata.</p>
+      <div class="status-lookup">
+        <input type="text" id="status-code-input" placeholder="Inserisci il codice (es. SV-A1B2C3)" maxlength="12" oninput="this.value=this.value.toUpperCase()">
+        <button onclick="checkStatus()">Cerca →</button>
+      </div>
+      <div class="status-err" id="status-err">Codice non trovato. Controlla di averlo inserito correttamente.</div>
+      <div class="status-card" id="status-card">
+        <div class="status-card-header">
+          <div>
+            <div class="status-name" id="sc-name">—</div>
+            <div style="font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.15em;color:var(--gray4);margin-top:0.3rem;">Codice: <span id="sc-code">—</span></div>
+          </div>
+          <span class="badge" id="sc-badge">—</span>
+        </div>
+        <div class="status-rows">
+          <div class="status-row"><span class="status-row-label">Servizio</span><span class="status-row-val" id="sc-service">—</span></div>
+          <div class="status-row"><span class="status-row-label">Barbiere</span><span class="status-row-val" id="sc-barber">—</span></div>
+          <div class="status-row"><span class="status-row-label">Data</span><span class="status-row-val" id="sc-date">—</span></div>
+          <div class="status-row"><span class="status-row-label">Orario</span><span class="status-row-val" id="sc-time">—</span></div>
+        </div>
+        <div class="status-big" id="sc-status-block"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section hours-section" id="hours">
+    <div class="sec-label">Orari & Contatti</div>
+    <div class="hours-grid">
+      <div class="hours-table" id="pub-hours-table"></div>
+      <div>
+        <div class="contact-list">
+          <div class="contact-item">TEL — <a id="pub-tel" href="#">+39 081 000 0000</a></div>
+          <div class="contact-item">IG — <a id="pub-ig" href="#">@sevenbarber</a></div>
+          <div class="contact-item">INDIRIZZO — <span id="pub-addr2">Via Toledo 100, Napoli</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">SEVEN</div>
+    <div class="footer-copy">© 2026 Seven Barber Shop — Casal Velino. All rights reserved</div>
+  </footer>
+</div>
+
+<!-- ======================== ADMIN ======================== -->
+<div class="view" id="admin-view">
+  <div id="admin-login">
+    <div class="login-box">
+      <h2>ADMIN</h2>
+      <p>Seven Barber Shop — Pannello Gestione</p>
+      <div style="background:var(--black);padding:1.5rem;">
+        <label class="m-label">Password</label>
+        <input class="m-input" type="password" id="login-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" style="margin-top:0.5rem;">
+      </div>
+      <button class="btn-primary" onclick="doLogin()" style="width:100%;margin-top:2px;padding:1.2rem;">Accedi →</button>
+      <div class="login-err" id="login-err">Password errata</div>
+      <p style="margin-top:1.5rem;font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.1em;color:var(--gray4);">Password demo: <span style="color:var(--accent);">seven2026</span></p>
+    </div>
+  </div>
+
+  <div id="admin-shell">
+    <aside class="admin-sidebar">
+      <div class="sidebar-logo">
+        <img src="/mnt/user-data/uploads/Seven-Carmine-Logo_jpg.jpeg" alt="">
+        <span>Admin</span>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="s-btn active" onclick="showPage('dash',this)">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard
+        </button>
+        <button class="s-btn" onclick="showPage('bookings',this)">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Prenotazioni
+        </button>
+        <button class="s-btn" onclick="showPage('manual',this)">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Aggiungi Manuale
+        </button>
+        <button class="s-btn" onclick="showPage('barbers',this)">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Barbieri
+        </button>
+        <button class="s-btn" onclick="showPage('services-admin',this)">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Servizi & Prezzi
+        </button>
+        <button class="s-btn" onclick="showPage('hours-admin',this)">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Orari & Chiusure
+        </button>
+        <button class="s-btn" onclick="showPage('archive',this)">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>Archivio
+        </button>
+        <button class="s-btn" onclick="showPage('settings-admin',this)">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Impostazioni
+        </button>
+      </nav>
+      <div class="sidebar-footer"><button class="s-logout" onclick="doLogout()">← Esci</button></div>
+    </aside>
+
+    <main class="admin-main">
+      <!-- DASHBOARD -->
+      <div class="admin-page active" id="page-dash">
+        <div class="admin-header"><h1>Dashboard</h1><span id="dash-date"></span></div>
+        <div class="admin-cards">
+          <div class="admin-card"><div class="label">In Attesa</div><div class="value warn" id="dc-pending">0</div></div>
+          <div class="admin-card"><div class="label">Confermate Oggi</div><div class="value success" id="dc-today">0</div></div>
+          <div class="admin-card"><div class="label">Totale Mese</div><div class="value accent" id="dc-month">0</div></div>
+          <div class="admin-card"><div class="label">Rifiutate</div><div class="value danger" id="dc-rejected">0</div></div>
+        </div>
+        <div class="admin-table-wrap">
+          <div class="table-head"><h3>Richieste in Attesa</h3></div>
+          <table class="admin-table"><thead><tr><th>Cliente</th><th>Codice</th><th>Servizio</th><th>Data</th><th>Orario</th><th>Barbiere</th><th>Stato</th><th>Azioni</th></tr></thead>
+          <tbody id="pending-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- PRENOTAZIONI -->
+      <div class="admin-page" id="page-bookings">
+        <div class="admin-header"><h1>Prenotazioni</h1><span>Future e attive</span></div>
+        <div class="admin-table-wrap">
+          <div class="table-head"><h3>Lista</h3>
+            <div class="table-filters">
+              <button class="filter-btn active" onclick="filterBookings('all',this)">Tutte</button>
+              <button class="filter-btn" onclick="filterBookings('pending',this)">In attesa</button>
+              <button class="filter-btn" onclick="filterBookings('confirmed',this)">Confermate</button>
+              <button class="filter-btn" onclick="filterBookings('rejected',this)">Rifiutate</button>
+            </div>
+          </div>
+          <table class="admin-table"><thead><tr><th>Cliente</th><th>Codice</th><th>Tel</th><th>Servizio</th><th>Data</th><th>Orario</th><th>Barbiere</th><th>Note</th><th>Stato</th><th>Azioni</th></tr></thead>
+          <tbody id="all-bookings-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- MANUALE -->
+      <div class="admin-page" id="page-manual">
+        <div class="admin-header"><h1>Aggiungi Prenotazione</h1><span>Inserimento manuale</span></div>
+        <div style="background:var(--gray);border:1px solid var(--gray3);padding:2rem;max-width:700px;">
+          <div class="manual-form">
+            <div class="f-field-a"><label class="m-label">Nome *</label><input class="m-input" id="mb-name"></div>
+            <div class="f-field-a"><label class="m-label">Telefono</label><input class="m-input" id="mb-phone" type="tel"></div>
+            <div class="f-field-a"><label class="m-label">Servizio *</label><select class="m-select" id="mb-service"><option value="" disabled selected>Seleziona</option></select></div>
+            <div class="f-field-a"><label class="m-label">Barbiere</label><select class="m-select" id="mb-barber"><option value="">Nessuna preferenza</option></select></div>
+            <div class="f-field-a"><label class="m-label">Data *</label><input class="m-input" id="mb-date" type="date"></div>
+            <div class="f-field-a"><label class="m-label">Orario *</label><select class="m-select" id="mb-time"></select></div>
+            <div class="f-field-a full"><label class="m-label">Note</label><textarea class="m-textarea" id="mb-notes"></textarea></div>
+            <div class="full" style="display:flex;gap:1rem;flex-wrap:wrap;">
+              <button class="save-btn" onclick="addManualBooking()">Salva Prenotazione</button>
+              <button class="save-btn" style="background:var(--accent2);" onclick="addManualBookingAndCalendar()">Salva + Google Calendar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BARBIERI -->
+      <div class="admin-page" id="page-barbers">
+        <div class="admin-header"><h1>Barbieri</h1><button class="add-btn" onclick="openAddBarber()">+ Aggiungi Barbiere</button></div>
+        <div class="admin-table-wrap"><div class="barber-list" id="barber-list"></div></div>
+        <p style="font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.1em;color:var(--gray4);margin-top:1rem;">I barbieri attivi appaiono nel form di prenotazione pubblica.</p>
+      </div>
+
+      <!-- SERVIZI -->
+      <div class="admin-page" id="page-services-admin">
+        <div class="admin-header"><h1>Servizi & Prezzi</h1><button class="add-btn" onclick="openAddService()">+ Aggiungi</button></div>
+        <div class="admin-table-wrap"><div class="srv-admin-list" id="srv-admin-list"></div></div>
+      </div>
+
+      <!-- ORARI -->
+      <div class="admin-page" id="page-hours-admin">
+        <div class="admin-header"><h1>Orari & Chiusure</h1></div>
+        <div class="settings-grid">
+          <div class="settings-card">
+            <h3>Orari Settimanali</h3>
+            <div id="hours-editor"></div>
+            <button class="save-btn" onclick="saveHours()">Salva Orari</button>
+          </div>
+          <div class="settings-card">
+            <h3>Pausa Pranzo</h3>
+            <p style="font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.1em;color:var(--gray4);line-height:1.7;margin-bottom:1rem;">Gli slot in questo intervallo verranno bloccati ogni giorno.</p>
+            <div class="setting-row">
+              <span class="setting-label">Attiva pausa</span>
+              <label class="toggle"><input type="checkbox" id="s-break-enabled" onchange="toggleBreak(this.checked)"><span class="toggle-slider"></span></label>
+            </div>
+            <div id="break-inputs" style="display:none;">
+              <div class="setting-row"><span class="setting-label">Inizio pausa</span><input class="edit-field" type="time" id="s-break-from" value="13:00"></div>
+              <div class="setting-row"><span class="setting-label">Fine pausa</span><input class="edit-field" type="time" id="s-break-to" value="14:30"></div>
+            </div>
+            <button class="save-btn" onclick="saveBreak()">Salva Pausa</button>
+          </div>
+          <div class="settings-card">
+            <h3>Giorni Chiusi Extra</h3>
+            <p style="font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.1em;color:var(--gray4);margin-bottom:1rem;">Aggiungi date specifiche di chiusura (ferie, festività...)</p>
+            <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+              <input class="m-input" type="date" id="close-date-input" style="flex:1;min-width:120px;">
+              <input class="m-input" type="text" id="close-reason" placeholder="Motivo (opz.)" style="flex:1;min-width:100px;">
+              <button class="add-btn" onclick="addClosedDay()">+</button>
+            </div>
+            <div class="day-tags" id="closed-days-list"></div>
+          </div>
+          <div class="settings-card">
+            <h3>Slot Prenotazione</h3>
+            <div class="setting-row"><span class="setting-label">Durata slot (min)</span><input class="edit-field" id="s-slot" type="number" value="30" min="15" max="120" style="width:80px;"></div>
+            <div class="setting-row"><span class="setting-label">Ora apertura</span><input class="edit-field" id="s-open" type="time" value="09:00"></div>
+            <div class="setting-row"><span class="setting-label">Ora chiusura</span><input class="edit-field" id="s-close" type="time" value="19:00"></div>
+            <button class="save-btn" onclick="rebuildSlots();showNotif('Slot aggiornati','success')">Salva Slot</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ARCHIVIO -->
+      <div class="admin-page" id="page-archive">
+        <div class="admin-header"><h1>Archivio</h1><span id="archive-info-label"></span></div>
+        <div style="background:var(--gray);border:1px solid var(--gray3);padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+          <span style="font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.15em;color:var(--gray4);">Conservazione: <strong style="color:var(--accent);" id="retention-label">30</strong> giorni. Poi eliminate automaticamente.</span>
+          <button class="act-btn del" onclick="purgeArchiveNow()" style="margin-left:auto;">🗑 Svuota ora</button>
+        </div>
+        <div class="admin-table-wrap">
+          <div class="table-head"><h3>Passate</h3>
+            <div class="table-filters">
+              <button class="filter-btn active" onclick="filterArchive('all',this)">Tutte</button>
+              <button class="filter-btn" onclick="filterArchive('confirmed',this)">Confermate</button>
+              <button class="filter-btn" onclick="filterArchive('rejected',this)">Rifiutate</button>
+              <button class="filter-btn" onclick="filterArchive('pending',this)">Non gestite</button>
+            </div>
+          </div>
+          <table class="admin-table"><thead><tr><th>Cliente</th><th>Tel</th><th>Servizio</th><th>Data</th><th>Orario</th><th>Stato</th><th>Scade</th><th>Azioni</th></tr></thead>
+          <tbody id="archive-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- IMPOSTAZIONI -->
+      <div class="admin-page" id="page-settings-admin">
+        <div class="admin-header"><h1>Impostazioni</h1></div>
+        <div class="settings-grid">
+          <div class="settings-card">
+            <h3>Info Negozio</h3>
+            <div class="setting-row"><span class="setting-label">Nome</span><input class="edit-field" id="s-name" value="Seven Barber Shop"></div>
+            <div class="setting-row"><span class="setting-label">Telefono</span><input class="edit-field" id="s-tel" value="+39 081 000 0000"></div>
+            <div class="setting-row"><span class="setting-label">Instagram</span><input class="edit-field" id="s-ig" value="@sevenbarber"></div>
+            <div class="setting-row"><span class="setting-label">Indirizzo</span><input class="edit-field" id="s-addr" value="Via Toledo 100, Napoli" style="width:200px;"></div>
+            <button class="save-btn" onclick="saveInfo()">Salva Info</button>
+          </div>
+          <div class="settings-card">
+            <h3>Password Admin</h3>
+            <div class="setting-row"><span class="setting-label">Nuova Password</span><input class="edit-field" id="s-pw" type="password" placeholder="••••••••"></div>
+            <div class="setting-row"><span class="setting-label">Conferma</span><input class="edit-field" id="s-pw2" type="password" placeholder="••••••••"></div>
+            <button class="save-btn" onclick="changePw()">Cambia Password</button>
+          </div>
+          <div class="settings-card">
+            <h3>Google Calendar</h3>
+            <p style="font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.1em;color:var(--gray4);line-height:1.7;margin-bottom:1rem;">Le prenotazioni confermate generano automaticamente un link per Google Calendar con tutti i dettagli.</p>
+            <div class="setting-row"><span class="setting-label">Notifiche Email</span>
+              <label class="toggle"><input type="checkbox" id="s-notif" checked><span class="toggle-slider"></span></label>
+            </div>
+            <button class="save-btn" onclick="showNotif('Impostazioni salvate','success')">Salva</button>
+          </div>
+          <div class="settings-card">
+            <h3>Archivio & Retention</h3>
+            <p style="font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.1em;color:var(--gray4);line-height:1.7;margin-bottom:1rem;">Le prenotazioni passate vengono spostate in archivio. Dopo il periodo impostato vengono eliminate definitivamente.</p>
+            <div class="setting-row"><span class="setting-label">Conserva (giorni)</span><input class="edit-field" id="s-retention" type="number" min="1" max="365" value="30" style="width:80px;"></div>
+            <div class="setting-row"><span class="setting-label">Eliminazione auto</span>
+              <label class="toggle"><input type="checkbox" id="s-auto-purge" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div style="margin-top:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
+              <button class="save-btn" onclick="saveRetention()">Salva</button>
+              <button class="act-btn del" style="padding:0.5rem 1.2rem;" onclick="purgeArchiveNow()">🗑 Elimina ora</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Modal Servizio -->
+<div class="modal-bg" id="modal-service">
+  <div class="modal">
+    <h2>Servizio<button class="modal-close" onclick="closeModal('modal-service')">✕</button></h2>
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="f-field-a"><label class="m-label">Nome</label><input class="m-input" id="ms-name"></div>
+      <div class="f-field-a"><label class="m-label">Descrizione</label><input class="m-input" id="ms-desc"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="f-field-a"><label class="m-label">Prezzo (€)</label><input class="m-input" id="ms-price" type="number" min="0"></div>
+        <div class="f-field-a"><label class="m-label">Durata (min)</label><input class="m-input" id="ms-duration" type="number" min="15"></div>
+      </div>
+    </div>
+    <div class="modal-actions"><button class="save-btn" onclick="saveService()">Salva</button><button class="btn-ghost" onclick="closeModal('modal-service')">Annulla</button></div>
+  </div>
+</div>
+
+<!-- Modal Barbiere -->
+<div class="modal-bg" id="modal-barber">
+  <div class="modal">
+    <h2>Barbiere<button class="modal-close" onclick="closeModal('modal-barber')">✕</button></h2>
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="f-field-a"><label class="m-label">Nome *</label><input class="m-input" id="mb2-name" placeholder="es. Carmine"></div>
+      <div class="f-field-a"><label class="m-label">Ruolo</label><input class="m-input" id="mb2-role" placeholder="es. Barbiere Senior"></div>
+      <div style="display:flex;align-items:center;gap:1rem;margin-top:0.5rem;">
+        <label class="toggle"><input type="checkbox" id="mb2-active" checked><span class="toggle-slider"></span></label>
+        <span style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;color:var(--gray4);">Attivo (visibile nel form prenotazione)</span>
+      </div>
+    </div>
+    <div class="modal-actions"><button class="save-btn" onclick="saveBarber()">Salva</button><button class="btn-ghost" onclick="closeModal('modal-barber')">Annulla</button></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const DATA_KEY = 'seven_data_v2';
+
+const defaultData = {
+  password: 'seven2026',
+  barbers: [
+    {id:1, name:'Carmine', role:'Barbiere', active:true}
+  ],
+  services: [
+    {id:1,name:'Taglio',desc:'Taglio personalizzato su misura',price:25,duration:45},
+    {id:2,name:'Barba',desc:'Definizione o rasatura tradizionale con lama',price:20,duration:30},
+    {id:3,name:'Combo Taglio + Barba',desc:'Il pacchetto completo per chi non scende a compromessi',price:40,duration:75},
+    {id:4,name:'Fading',desc:'Sfumature tecniche ad alta precisione',price:30,duration:60},
+    {id:5,name:'Trattamenti',desc:'Idratazione, cera terapeutica, massaggio cuoio capelluto',price:15,duration:30},
+    {id:6,name:'Junior',desc:'Per i più piccoli, con la stessa cura. Fino a 12 anni',price:18,duration:30},
+  ],
+  hours: {
+    Mon:{open:false,from:'',to:''},
+    Tue:{open:true,from:'09:00',to:'19:00'},
+    Wed:{open:true,from:'09:00',to:'19:00'},
+    Thu:{open:true,from:'09:00',to:'19:00'},
+    Fri:{open:true,from:'09:00',to:'20:00'},
+    Sat:{open:true,from:'08:30',to:'18:00'},
+    Sun:{open:false,from:'',to:''},
+  },
+  breakEnabled: false,
+  breakFrom: '13:00',
+  breakTo: '14:30',
+  closedDays: [],
+  bookings: [],
+  info: {name:'Seven Barber Shop',tel:'+39 081 000 0000',ig:'@sevenbarber',address:'Via Toledo 100, Napoli'},
+  slotDuration: 30,
+  slotOpen: '09:00',
+  slotClose: '19:00',
+  archiveRetentionDays: 30,
+  autoPurge: true,
+};
+
+let D = JSON.parse(localStorage.getItem(DATA_KEY)||'null') || JSON.parse(JSON.stringify(defaultData));
+let editingServiceId = null;
+let editingBarberId = null;
+let currentBookingFilter = 'all';
+let currentArchiveFilter = 'all';
+let loggedIn = false;
+// Public booking state
+let selectedDate = null;
+let selectedTime = null;
+
+function save(){ localStorage.setItem(DATA_KEY, JSON.stringify(D)); }
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded', ()=>{
+  renderPublic();
+  buildDaysStrip();
+  document.getElementById('close-date-input').min = todayStr();
+});
+
+function todayStr(){ return new Date().toISOString().split('T')[0]; }
+
+// ============================================================
+// PUBLIC RENDER
+// ============================================================
+function renderPublic(){
+  // Services
+  document.getElementById('services-grid').innerHTML = D.services.map((s,i)=>`
+    <div class="srv-card">
+      <div class="srv-n">0${i+1}</div>
+      <div class="srv-name">${s.name.toUpperCase()}</div>
+      <p class="srv-desc">${s.desc}</p>
+      <div class="srv-price">A PARTIRE DA €${s.price}</div>
+      <div class="srv-duration">${s.duration} MIN</div>
+    </div>`).join('');
+
+  // Service select (public form)
+  document.getElementById('pb-service').innerHTML = '<option value="" disabled selected>Seleziona</option>' +
+    D.services.map(s=>`<option value="${s.id}">${s.name} — €${s.price}</option>`).join('');
+
+  // Barber select (public form)
+  const activeBarbers = D.barbers.filter(b=>b.active);
+  document.getElementById('pb-barber').innerHTML = '<option value="">Nessuna preferenza</option>' +
+    activeBarbers.map(b=>`<option value="${b.name}">${b.name}</option>`).join('');
+
+  // Hours
+  const dayNames = {Mon:'Lunedì',Tue:'Martedì',Wed:'Mercoledì',Thu:'Giovedì',Fri:'Venerdì',Sat:'Sabato',Sun:'Domenica'};
+  document.getElementById('pub-hours-table').innerHTML = Object.entries(D.hours).map(([k,v])=>`
+    <div class="hour-row">
+      <span class="hour-day">${dayNames[k]}</span>
+      <span class="hour-time ${v.open?'':'closed'}">${v.open ? v.from+' — '+v.to+(D.breakEnabled?' (pausa '+D.breakFrom+'–'+D.breakTo+')':'') : 'Chiuso'}</span>
+    </div>`).join('');
+
+  // Info
+  ['pub-address','pub-addr2'].forEach(id=>document.getElementById(id).textContent = D.info.address);
+  document.getElementById('pub-tel').textContent = D.info.tel;
+  document.getElementById('pub-tel').href = 'tel:'+D.info.tel.replace(/\s/g,'');
+  document.getElementById('pub-ig').textContent = D.info.ig;
+}
+
+// ============================================================
+// SLOT PICKER — DAYS STRIP (3 weeks)
+// ============================================================
+const DAY_SHORT = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+const DAY_KEYS  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function buildDaysStrip(){
+  const strip = document.getElementById('days-strip');
+  strip.innerHTML = '';
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  for(let i=0;i<21;i++){
+    const d = new Date(today);
+    d.setDate(today.getDate()+i);
+    const ds = d.toISOString().split('T')[0];
+    const dk = DAY_KEYS[d.getDay()];
+    const dayConfig = D.hours[dk];
+    const isClosed = !dayConfig?.open || D.closedDays.some(cd=>cd.date===ds);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'day-btn' + (isClosed?' closed-day-btn':'');
+    btn.innerHTML = `<span class="dname">${DAY_SHORT[d.getDay()]}</span><span class="dnum">${d.getDate()}</span>`;
+    if(!isClosed){
+      btn.onclick = ()=>selectDay(ds, btn);
+    }
+    strip.appendChild(btn);
+  }
+}
+
+function selectDay(dateStr, btn){
+  selectedDate = dateStr;
+  selectedTime = null;
+  document.getElementById('pb-date').value = dateStr;
+  document.getElementById('pb-time').value = '';
+  document.querySelectorAll('.day-btn').forEach(b=>b.classList.remove('selected-day'));
+  btn.classList.add('selected-day');
+  buildTimesGrid(dateStr);
+}
+
+function onServiceChange(){
+  if(selectedDate) buildTimesGrid(selectedDate);
+}
+
+// ============================================================
+// SLOT PICKER — TIMES GRID
+// ============================================================
+function buildTimesGrid(dateStr){
+  const grid = document.getElementById('times-grid');
+  const dk = DAY_KEYS[new Date(dateStr+'T12:00:00').getDay()];
+  const dayConfig = D.hours[dk];
+  if(!dayConfig?.open){ grid.innerHTML='<div class="times-empty">Giorno chiuso</div>'; return; }
+
+  const slotMin = D.slotDuration || 30;
+  const allSlots = generateSlots(dayConfig.from, dayConfig.to, slotMin);
+
+  if(!allSlots.length){ grid.innerHTML='<div class="times-empty">Nessuno slot disponibile</div>'; return; }
+
+  // Booked slots on this date (confirmed or pending)
+  const bookedTimes = D.bookings
+    .filter(b=>b.date===dateStr && (b.status==='confirmed'||b.status==='pending'))
+    .map(b=>b.time);
+
+  // Break slots
+  const breakSlots = new Set();
+  if(D.breakEnabled){
+    allSlots.forEach(t=>{ if(isInBreak(t)) breakSlots.add(t); });
+  }
+
+  // Today: block past times
+  const now = new Date();
+  const todayDate = todayStr();
+
+  grid.innerHTML = allSlots.map(t=>{
+    const isBreak = breakSlots.has(t);
+    const isSoldOut = bookedTimes.includes(t);
+    let isPast = false;
+    if(dateStr===todayDate){
+      const [h,m] = t.split(':').map(Number);
+      const slotDate = new Date(); slotDate.setHours(h,m,0,0);
+      isPast = slotDate <= now;
+    }
+    const disabled = isBreak || isSoldOut || isPast;
+    let cls = 'time-btn';
+    if(isBreak) cls += ' break-slot';
+    else if(isSoldOut||isPast) cls += ' sold-out';
+    const label = isBreak ? 'Pausa' : t;
+    return `<button type="button" class="${cls}" ${disabled?'disabled':''} onclick="selectTime('${t}',this)">${label}</button>`;
+  }).join('');
+}
+
+function generateSlots(from, to, stepMin){
+  const slots = [];
+  let [h,m] = from.split(':').map(Number);
+  const [ch,cm] = to.split(':').map(Number);
+  while(h*60+m < ch*60+cm){
+    slots.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
+    m += stepMin;
+    if(m>=60){h+=Math.floor(m/60);m=m%60;}
+  }
+  return slots;
+}
+
+function isInBreak(time){
+  if(!D.breakEnabled) return false;
+  const [h,m] = time.split(':').map(Number);
+  const [bh,bm] = D.breakFrom.split(':').map(Number);
+  const [eh,em] = D.breakTo.split(':').map(Number);
+  const t=h*60+m, b=bh*60+bm, e=eh*60+em;
+  return t>=b && t<e;
+}
+
+function selectTime(time, btn){
+  selectedTime = time;
+  document.getElementById('pb-time').value = time;
+  document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('selected-time'));
+  btn.classList.add('selected-time');
+}
+
+// ============================================================
+// PUBLIC BOOKING SUBMIT
+// ============================================================
+function genCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let c='SV-';
+  for(let i=0;i<6;i++) c+=chars[Math.floor(Math.random()*chars.length)];
+  return c;
+}
+
+function submitPublicBooking(e){
+  e.preventDefault();
+  if(!selectedDate){ showNotif('Seleziona un giorno','danger'); return; }
+  if(!selectedTime){ showNotif('Seleziona un orario','danger'); return; }
+  if(D.closedDays.some(cd=>cd.date===selectedDate)){ showNotif('Giorno chiuso, scegli un\'altra data','danger'); return; }
+
+  const serviceId = parseInt(document.getElementById('pb-service').value);
+  const srv = D.services.find(s=>s.id===serviceId);
+  // generate unique code
+  let code;
+  do { code = genCode(); } while(D.bookings.some(b=>b.code===code));
+
+  const booking = {
+    id: Date.now(),
+    code,
+    name: document.getElementById('pb-name').value.trim(),
+    phone: document.getElementById('pb-phone').value,
+    serviceId, serviceName:srv?.name||'', serviceDuration:srv?.duration||45, servicePrice:srv?.price||0,
+    barber: document.getElementById('pb-barber').value||'Nessuna preferenza',
+    date: selectedDate, time: selectedTime,
+    notes: document.getElementById('pb-notes').value,
+    status:'pending', source:'web',
+    createdAt: new Date().toISOString(),
+  };
+  D.bookings.push(booking);
+  save();
+  document.getElementById('pubBookForm').style.display='none';
+  document.getElementById('booking-code-display').textContent = code;
+  document.getElementById('book-success').classList.add('show');
+  showNotif('Richiesta inviata con successo','success');
+}
+
+// ============================================================
+// STATUS CHECK (PUBLIC)
+// ============================================================
+function checkStatus(){
+  const input = document.getElementById('status-code-input').value.trim().toUpperCase();
+  const errEl = document.getElementById('status-err');
+  const card = document.getElementById('status-card');
+  errEl.classList.remove('show');
+  card.classList.remove('show');
+  if(!input){ showNotif('Inserisci un codice','danger'); return; }
+  const b = D.bookings.find(b=>b.code===input);
+  if(!b){ errEl.classList.add('show'); return; }
+
+  document.getElementById('sc-name').textContent = b.name;
+  document.getElementById('sc-code').textContent = b.code;
+  document.getElementById('sc-service').textContent = b.serviceName + (b.servicePrice ? ` — €${b.servicePrice}` : '');
+  document.getElementById('sc-barber').textContent = b.barber||'-';
+  document.getElementById('sc-date').textContent = fmtDate(b.date);
+  document.getElementById('sc-time').textContent = b.time;
+
+  const badge = document.getElementById('sc-badge');
+  badge.className = 'badge ' + b.status;
+  badge.textContent = statusLabel(b.status);
+
+  const block = document.getElementById('sc-status-block');
+  if(b.status==='pending'){
+    block.innerHTML=`<div class="status-icon">⏳</div><div class="status-text-pending">IN ATTESA DI CONFERMA</div><p style="font-style:italic;font-size:0.9rem;color:rgba(242,237,230,0.4);margin-top:0.75rem;">La tua richiesta è in elaborazione. Ricontrolla tra qualche ora.</p>`;
+  } else if(b.status==='confirmed'){
+    block.innerHTML=`<div class="status-icon">✦</div><div class="status-text-confirmed">PRENOTAZIONE CONFERMATA</div><p style="font-style:italic;font-size:0.9rem;color:rgba(242,237,230,0.4);margin-top:0.75rem;">Ti aspettiamo! Ricorda di arrivare puntuale.</p>
+    <a class="gcal-link-btn" href="${buildGCalUrl(b)}" target="_blank">📅 Aggiungi a Google Calendar</a>`;
+  } else {
+    block.innerHTML=`<div class="status-icon">✗</div><div class="status-text-rejected">PRENOTAZIONE NON DISPONIBILE</div><p style="font-style:italic;font-size:0.9rem;color:rgba(242,237,230,0.4);margin-top:0.75rem;">Purtroppo lo slot richiesto non è disponibile. Prenota un altro slot.</p>
+    <button class="gcal-link-btn" style="margin-top:1rem;" onclick="document.getElementById('book').scrollIntoView({behavior:'smooth'})">→ Nuova prenotazione</button>`;
+  }
+  card.classList.add('show');
+}
+
+function buildGCalUrl(b){
+  const [y,mo,d]=b.date.split('-').map(Number);
+  const [h,m]=b.time.split(':').map(Number);
+  const start=new Date(y,mo-1,d,h,m);
+  const end=new Date(start.getTime()+(b.serviceDuration||45)*60000);
+  const fmt=dt=>dt.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Seven Barber Shop — '+b.serviceName)}&dates=${fmt(start)}/${fmt(end)}&details=${encodeURIComponent(`Cod. ${b.code}\nCliente: ${b.name}\nBarbiere: ${b.barber||'-'}`)}&location=${encodeURIComponent(D.info.address)}`;
+}
+
+// ============================================================
+// ADMIN AUTH
+// ============================================================
+function showAdmin(){
+  document.getElementById('public-view').classList.remove('active');
+  document.getElementById('admin-view').classList.add('active');
+  if(!loggedIn){
+    document.getElementById('admin-login').style.display='flex';
+    document.getElementById('admin-shell').classList.remove('active');
+  }
+}
+function doLogin(){
+  const pw = document.getElementById('login-pw').value;
+  if(pw===D.password){
+    loggedIn=true;
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-shell').classList.add('active');
+    initAdmin();
+  } else { document.getElementById('login-err').classList.add('show'); }
+}
+function doLogout(){
+  loggedIn=false;
+  document.getElementById('admin-shell').classList.remove('active');
+  document.getElementById('admin-view').classList.remove('active');
+  document.getElementById('public-view').classList.add('active');
+}
+
+// ============================================================
+// ADMIN INIT
+// ============================================================
+function initAdmin(){
+  document.getElementById('dash-date').textContent = new Date().toLocaleDateString('it-IT',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  runAutoArchive();
+  updateDashCards();
+  renderPendingTable();
+  renderAllBookings();
+  renderBarbersAdmin();
+  renderServicesAdmin();
+  renderHoursEditor();
+  renderClosedDays();
+  populateSettings();
+  rebuildAdminSlots();
+  renderBarberSelects();
+}
+function showPage(name,btn){
+  document.querySelectorAll('.admin-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.s-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(name==='dash') runAutoArchive(),updateDashCards(),renderPendingTable();
+  if(name==='bookings') renderAllBookings();
+  if(name==='barbers') renderBarbersAdmin();
+  if(name==='services-admin') renderServicesAdmin();
+  if(name==='hours-admin') renderHoursEditor(),renderClosedDays(),populateBreakSettings();
+  if(name==='archive') renderArchive();
+}
+
+// ============================================================
+// ARCHIVE / AUTO-PURGE
+// ============================================================
+function isBookingPast(b){ return b.date < todayStr(); }
+function daysUntilPurge(b){
+  const purge = new Date(b.date+'T23:59:59');
+  purge.setDate(purge.getDate()+(D.archiveRetentionDays||30));
+  return Math.ceil((purge-new Date())/(24*60*60*1000));
+}
+function runAutoArchive(){
+  if(D.autoPurge===false) return;
+  const before=D.bookings.length;
+  D.bookings=D.bookings.filter(b=>!isBookingPast(b)||daysUntilPurge(b)>0);
+  if(D.bookings.length!==before) save();
+}
+function updateDashCards(){
+  const today=todayStr(), thisMonth=today.slice(0,7);
+  const active=D.bookings.filter(b=>!isBookingPast(b));
+  document.getElementById('dc-pending').textContent=active.filter(b=>b.status==='pending').length;
+  document.getElementById('dc-today').textContent=D.bookings.filter(b=>b.status==='confirmed'&&b.date===today).length;
+  document.getElementById('dc-month').textContent=D.bookings.filter(b=>b.date.startsWith(thisMonth)).length;
+  document.getElementById('dc-rejected').textContent=active.filter(b=>b.status==='rejected').length;
+}
+function renderArchive(filter){
+  if(filter) currentArchiveFilter=filter;
+  const retention=D.archiveRetentionDays||30;
+  document.getElementById('retention-label').textContent=retention;
+  const archived=D.bookings.filter(b=>isBookingPast(b));
+  document.getElementById('archive-info-label').textContent=archived.length+' prenotazioni passate';
+  const tbody=document.getElementById('archive-tbody');
+  let list=[...archived].sort((a,b)=>b.date.localeCompare(a.date));
+  if(currentArchiveFilter!=='all') list=list.filter(b=>b.status===currentArchiveFilter);
+  if(!list.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--gray4);font-family:var(--font-mono);font-size:0.6rem;padding:2rem;">Archivio vuoto</td></tr>';return;}
+  tbody.innerHTML=list.map(b=>{
+    const rem=daysUntilPurge(b);
+    const exp=rem<=7;
+    const lbl=rem<=0?'Scaduta':rem===1?'Domani':`${rem}gg`;
+    return `<tr style="opacity:0.75;">
+      <td><strong>${b.name}</strong></td>
+      <td style="font-family:var(--font-mono);font-size:0.55rem;">${b.phone||'-'}</td>
+      <td>${b.serviceName}</td>
+      <td style="font-family:var(--font-mono);font-size:0.58rem;">${fmtDate(b.date)}</td>
+      <td style="font-family:var(--font-mono);font-size:0.58rem;">${b.time}</td>
+      <td><span class="badge ${b.status==='confirmed'?'confirmed':b.status==='rejected'?'rejected':'past'}">${statusLabel(b.status)}</span></td>
+      <td><span class="badge ${exp?'expiring':'past'}">${lbl}</span></td>
+      <td><button class="act-btn del" onclick="deleteBooking(${b.id},true)">🗑</button></td>
+    </tr>`;
+  }).join('');
+}
+function filterArchive(f,btn){
+  currentArchiveFilter=f;
+  document.querySelectorAll('#page-archive .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderArchive(f);
+}
+function purgeArchiveNow(){
+  const count=D.bookings.filter(b=>isBookingPast(b)).length;
+  if(!count){showNotif('Archivio già vuoto');return;}
+  if(!confirm(`Eliminare definitivamente ${count} prenotazioni dall'archivio?`)) return;
+  D.bookings=D.bookings.filter(b=>!isBookingPast(b));
+  save();updateDashCards();renderArchive();
+  showNotif(`${count} prenotazioni eliminate`,'success');
+}
+function saveRetention(){
+  const v=parseInt(document.getElementById('s-retention').value);
+  if(!v||v<1){showNotif('Valore non valido','danger');return;}
+  D.archiveRetentionDays=v;
+  D.autoPurge=document.getElementById('s-auto-purge').checked;
+  save();showNotif(`Retention impostata a ${v} giorni`,'success');
+}
+
+// ============================================================
+// BOOKINGS
+// ============================================================
+function renderPendingTable(){
+  const tbody=document.getElementById('pending-tbody');
+  const list=D.bookings.filter(b=>b.status==='pending'&&!isBookingPast(b)).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!list.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--gray4);font-family:var(--font-mono);font-size:0.6rem;padding:2rem;">Nessuna richiesta in attesa</td></tr>';return;}
+  tbody.innerHTML=list.map(b=>`<tr>
+    <td><strong>${b.name}</strong><br><span style="font-family:var(--font-mono);font-size:0.52rem;color:var(--gray4);">${b.phone||'-'}</span></td>
+    <td style="font-family:var(--font-mono);font-size:0.58rem;color:var(--accent);">${b.code||'-'}</td>
+    <td>${b.serviceName}</td>
+    <td style="font-family:var(--font-mono);font-size:0.62rem;">${fmtDate(b.date)}</td>
+    <td style="font-family:var(--font-mono);font-size:0.62rem;">${b.time}</td>
+    <td style="font-family:var(--font-mono);font-size:0.58rem;color:var(--gray4);">${b.barber||'-'}</td>
+    <td><span class="badge pending">In Attesa</span></td>
+    <td><div class="action-btns">
+      <button class="act-btn confirm" onclick="confirmBooking(${b.id})">✓ Conf.</button>
+      <button class="act-btn reject" onclick="rejectBooking(${b.id})">✗ Rif.</button>
+      <button class="act-btn calendar" onclick="openGCal(${b.id})">📅</button>
+    </div></td>
+  </tr>`).join('');
+}
+function renderAllBookings(){
+  const tbody=document.getElementById('all-bookings-tbody');
+  let list=D.bookings.filter(b=>!isBookingPast(b)).sort((a,b)=>a.date.localeCompare(b.date));
+  if(currentBookingFilter!=='all') list=list.filter(b=>b.status===currentBookingFilter);
+  if(!list.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--gray4);font-family:var(--font-mono);font-size:0.6rem;padding:2rem;">Nessuna prenotazione trovata</td></tr>';return;}
+  tbody.innerHTML=list.map(b=>`<tr>
+    <td><strong>${b.name}</strong></td>
+    <td style="font-family:var(--font-mono);font-size:0.55rem;color:var(--accent);">${b.code||'—'}</td>
+    <td style="font-family:var(--font-mono);font-size:0.55rem;">${b.phone||'-'}</td>
+    <td>${b.serviceName}</td>
+    <td style="font-family:var(--font-mono);font-size:0.58rem;">${fmtDate(b.date)}</td>
+    <td style="font-family:var(--font-mono);font-size:0.58rem;">${b.time}</td>
+    <td style="font-family:var(--font-mono);font-size:0.55rem;color:var(--gray4);">${b.barber||'-'}</td>
+    <td style="font-size:0.82rem;color:rgba(242,237,230,0.4);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.notes||'-'}</td>
+    <td><span class="badge ${b.status}">${statusLabel(b.status)}</span></td>
+    <td><div class="action-btns">
+      ${b.status==='pending'?`<button class="act-btn confirm" onclick="confirmBooking(${b.id})">✓</button><button class="act-btn reject" onclick="rejectBooking(${b.id})">✗</button>`:''}
+      ${b.status==='confirmed'?`<button class="act-btn calendar" onclick="openGCal(${b.id})">📅</button>`:''}
+      <button class="act-btn del" onclick="deleteBooking(${b.id})">🗑</button>
+    </div></td>
+  </tr>`).join('');
+}
+function filterBookings(f,btn){
+  currentBookingFilter=f;
+  document.querySelectorAll('#page-bookings .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAllBookings();
+}
+function confirmBooking(id){
+  const b=D.bookings.find(b=>b.id===id); if(!b) return;
+  b.status='confirmed'; save(); updateDashCards(); renderPendingTable(); renderAllBookings();
+  showNotif(`Prenotazione di ${b.name} confermata`,'success');
+  openGCal(id);
+  buildDaysStrip(); // refresh public sold out
+}
+function rejectBooking(id){
+  const b=D.bookings.find(b=>b.id===id); if(!b) return;
+  b.status='rejected'; save(); updateDashCards(); renderPendingTable(); renderAllBookings();
+  showNotif(`Prenotazione di ${b.name} rifiutata`,'danger');
+  buildDaysStrip();
+}
+function deleteBooking(id,fromArchive=false){
+  if(!confirm('Eliminare questa prenotazione?')) return;
+  D.bookings=D.bookings.filter(b=>b.id!==id);
+  save(); updateDashCards();
+  if(fromArchive) renderArchive(); else renderAllBookings();
+  buildDaysStrip();
+  showNotif('Prenotazione eliminata');
+}
+function openGCal(id){
+  const b=D.bookings.find(b=>b.id===id); if(!b) return;
+  window.open(buildGCalUrl(b),'_blank');
+}
+
+// ============================================================
+// MANUAL BOOKING
+// ============================================================
+function rebuildAdminSlots(){
+  const slots=generateSlots(D.slotOpen,D.slotClose,D.slotDuration);
+  const el=document.getElementById('mb-time');
+  if(!el) return;
+  el.innerHTML='<option value="" disabled selected>Seleziona</option>'+slots.map(t=>`<option value="${t}">${t}</option>`).join('');
+}
+function renderBarberSelects(){
+  const active=D.barbers.filter(b=>b.active);
+  ['mb-barber'].forEach(id=>{
+    const el=document.getElementById(id); if(!el) return;
+    el.innerHTML='<option value="">Nessuna preferenza</option>'+active.map(b=>`<option value="${b.name}">${b.name}</option>`).join('');
+  });
+}
+function addManualBooking(){
+  const name=document.getElementById('mb-name').value.trim();
+  if(!name){showNotif('Inserisci il nome','danger');return null;}
+  const serviceId=parseInt(document.getElementById('mb-service').value);
+  if(!serviceId){showNotif('Seleziona un servizio','danger');return null;}
+  const date=document.getElementById('mb-date').value;
+  const time=document.getElementById('mb-time').value;
+  if(!date||!time){showNotif('Seleziona data e orario','danger');return null;}
+  const srv=D.services.find(s=>s.id===serviceId);
+  const booking={
+    id:Date.now(),name,phone:document.getElementById('mb-phone').value,
+    serviceId,serviceName:srv?.name||'',serviceDuration:srv?.duration||45,servicePrice:srv?.price||0,
+    barber:document.getElementById('mb-barber').value||'Nessuna preferenza',
+    date,time,notes:document.getElementById('mb-notes').value,
+    status:'confirmed',source:'manual',createdAt:new Date().toISOString(),
+  };
+  D.bookings.push(booking); save(); updateDashCards();
+  showNotif(`Prenotazione per ${name} aggiunta`,'success');
+  ['mb-name','mb-phone','mb-date','mb-notes'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('mb-service').selectedIndex=0;
+  buildDaysStrip();
+  return booking;
+}
+function addManualBookingAndCalendar(){ const b=addManualBooking(); if(b) openGCal(b.id); }
+
+// ============================================================
+// BARBERS
+// ============================================================
+function renderBarbersAdmin(){
+  const el=document.getElementById('barber-list');
+  if(!D.barbers.length){el.innerHTML='<div style="padding:2rem;font-family:var(--font-mono);font-size:0.6rem;color:var(--gray4);">Nessun barbiere aggiunto</div>';return;}
+  el.innerHTML=D.barbers.map(b=>`
+    <div class="barber-row">
+      <span class="b-name">${b.name}</span>
+      <span class="b-role">${b.role||''}</span>
+      <div class="barber-active">
+        <label class="toggle"><input type="checkbox" ${b.active?'checked':''} onchange="toggleBarberActive(${b.id},this.checked)"><span class="toggle-slider"></span></label>
+        <span>${b.active?'Attivo':'Inattivo'}</span>
+      </div>
+      <div class="action-btns">
+        <button class="act-btn" onclick="openEditBarber(${b.id})">✏ Edit</button>
+        <button class="act-btn del" onclick="deleteBarber(${b.id})">🗑</button>
+      </div>
+    </div>`).join('');
+}
+function openAddBarber(){
+  editingBarberId=null;
+  document.getElementById('mb2-name').value='';
+  document.getElementById('mb2-role').value='';
+  document.getElementById('mb2-active').checked=true;
+  document.getElementById('modal-barber').classList.add('open');
+}
+function openEditBarber(id){
+  const b=D.barbers.find(b=>b.id===id); if(!b) return;
+  editingBarberId=id;
+  document.getElementById('mb2-name').value=b.name;
+  document.getElementById('mb2-role').value=b.role||'';
+  document.getElementById('mb2-active').checked=b.active;
+  document.getElementById('modal-barber').classList.add('open');
+}
+function saveBarber(){
+  const name=document.getElementById('mb2-name').value.trim();
+  if(!name){showNotif('Inserisci il nome','danger');return;}
+  const role=document.getElementById('mb2-role').value.trim();
+  const active=document.getElementById('mb2-active').checked;
+  if(editingBarberId){
+    const b=D.barbers.find(b=>b.id===editingBarberId);
+    if(b) Object.assign(b,{name,role,active});
+  } else {
+    D.barbers.push({id:Date.now(),name,role,active});
+  }
+  save(); renderBarbersAdmin(); renderPublic(); renderBarberSelects(); closeModal('modal-barber');
+  showNotif(editingBarberId?'Barbiere aggiornato':'Barbiere aggiunto','success');
+}
+function toggleBarberActive(id,active){
+  const b=D.barbers.find(b=>b.id===id); if(!b) return;
+  b.active=active; save(); renderBarbersAdmin(); renderPublic(); renderBarberSelects();
+}
+function deleteBarber(id){
+  if(!confirm('Eliminare questo barbiere?')) return;
+  D.barbers=D.barbers.filter(b=>b.id!==id);
+  save(); renderBarbersAdmin(); renderPublic(); renderBarberSelects();
+  showNotif('Barbiere eliminato');
+}
+
+// ============================================================
+// SERVICES
+// ============================================================
+function renderServicesAdmin(){
+  const mb=document.getElementById('mb-service');
+  mb.innerHTML='<option value="" disabled selected>Seleziona</option>'+D.services.map(s=>`<option value="${s.id}">${s.name} — €${s.price}</option>`).join('');
+  document.getElementById('srv-admin-list').innerHTML=D.services.map(s=>`
+    <div class="srv-admin-row">
+      <span class="name">${s.name}</span>
+      <span style="font-size:0.82rem;color:rgba(242,237,230,0.4);flex:2;">${s.desc}</span>
+      <span class="price">€${s.price}</span>
+      <span class="dur">${s.duration} min</span>
+      <div class="action-btns">
+        <button class="act-btn" onclick="openEditService(${s.id})">✏ Edit</button>
+        <button class="act-btn del" onclick="deleteService(${s.id})">🗑</button>
+      </div>
+    </div>`).join('');
+}
+function openAddService(){
+  editingServiceId=null;
+  ['ms-name','ms-desc','ms-price','ms-duration'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('modal-service').classList.add('open');
+}
+function openEditService(id){
+  const s=D.services.find(s=>s.id===id); if(!s) return;
+  editingServiceId=id;
+  document.getElementById('ms-name').value=s.name;
+  document.getElementById('ms-desc').value=s.desc;
+  document.getElementById('ms-price').value=s.price;
+  document.getElementById('ms-duration').value=s.duration;
+  document.getElementById('modal-service').classList.add('open');
+}
+function saveService(){
+  const name=document.getElementById('ms-name').value.trim();
+  const price=parseFloat(document.getElementById('ms-price').value)||0;
+  const duration=parseInt(document.getElementById('ms-duration').value)||45;
+  const desc=document.getElementById('ms-desc').value.trim();
+  if(!name){showNotif('Inserisci il nome del servizio','danger');return;}
+  if(editingServiceId){ const s=D.services.find(s=>s.id===editingServiceId); if(s) Object.assign(s,{name,desc,price,duration}); }
+  else D.services.push({id:Date.now(),name,desc,price,duration});
+  save(); renderServicesAdmin(); renderPublic(); closeModal('modal-service');
+  showNotif(editingServiceId?'Servizio aggiornato':'Servizio aggiunto','success');
+}
+function deleteService(id){
+  if(!confirm('Eliminare questo servizio?')) return;
+  D.services=D.services.filter(s=>s.id!==id);
+  save(); renderServicesAdmin(); renderPublic();
+  showNotif('Servizio eliminato');
+}
+
+// ============================================================
+// HOURS & BREAK
+// ============================================================
+const DAY_LABELS={Mon:'Lunedì',Tue:'Martedì',Wed:'Mercoledì',Thu:'Giovedì',Fri:'Venerdì',Sat:'Sabato',Sun:'Domenica'};
+function renderHoursEditor(){
+  document.getElementById('hours-editor').innerHTML=Object.entries(D.hours).map(([k,v])=>`
+    <div class="setting-row" style="align-items:center;gap:1rem;flex-wrap:wrap;">
+      <span class="setting-label" style="min-width:80px;">${DAY_LABELS[k]}</span>
+      <label class="toggle"><input type="checkbox" ${v.open?'checked':''} onchange="toggleDayOpen('${k}',this.checked)"><span class="toggle-slider"></span></label>
+      <div id="hours-inputs-${k}" style="display:${v.open?'flex':'none'};gap:0.5rem;align-items:center;">
+        <input class="m-input" type="time" id="h-from-${k}" value="${v.from||'09:00'}" style="width:90px;">
+        <span style="color:var(--gray4);">—</span>
+        <input class="m-input" type="time" id="h-to-${k}" value="${v.to||'19:00'}" style="width:90px;">
+      </div>
+    </div>`).join('');
+}
+function toggleDayOpen(k,open){
+  D.hours[k].open=open;
+  document.getElementById('hours-inputs-'+k).style.display=open?'flex':'none';
+}
+function saveHours(){
+  Object.keys(D.hours).forEach(k=>{
+    D.hours[k].from=document.getElementById('h-from-'+k)?.value||'';
+    D.hours[k].to=document.getElementById('h-to-'+k)?.value||'';
+  });
+  save(); renderPublic(); buildDaysStrip();
+  showNotif('Orari salvati','success');
+}
+function populateBreakSettings(){
+  document.getElementById('s-break-enabled').checked=D.breakEnabled||false;
+  document.getElementById('s-break-from').value=D.breakFrom||'13:00';
+  document.getElementById('s-break-to').value=D.breakTo||'14:30';
+  document.getElementById('break-inputs').style.display=D.breakEnabled?'block':'none';
+}
+function toggleBreak(on){
+  document.getElementById('break-inputs').style.display=on?'block':'none';
+}
+function saveBreak(){
+  D.breakEnabled=document.getElementById('s-break-enabled').checked;
+  D.breakFrom=document.getElementById('s-break-from').value;
+  D.breakTo=document.getElementById('s-break-to').value;
+  save(); renderPublic(); buildDaysStrip();
+  showNotif('Pausa pranzo salvata','success');
+}
+function renderClosedDays(){
+  const el=document.getElementById('closed-days-list');
+  if(!D.closedDays.length){el.innerHTML='<span style="font-family:var(--font-mono);font-size:0.55rem;color:var(--gray4);">Nessuna chiusura extra</span>';return;}
+  el.innerHTML=D.closedDays.map(cd=>`
+    <div class="day-tag closed-day">${fmtDate(cd.date)}${cd.reason?' — '+cd.reason:''}
+      <button class="rm" onclick="removeClosedDay('${cd.date}')">×</button>
+    </div>`).join('');
+}
+function addClosedDay(){
+  const date=document.getElementById('close-date-input').value;
+  const reason=document.getElementById('close-reason').value.trim();
+  if(!date){showNotif('Seleziona una data','danger');return;}
+  if(D.closedDays.some(cd=>cd.date===date)){showNotif('Data già presente','warn');return;}
+  D.closedDays.push({date,reason});
+  D.closedDays.sort((a,b)=>a.date.localeCompare(b.date));
+  save(); renderClosedDays(); buildDaysStrip();
+  document.getElementById('close-date-input').value='';
+  document.getElementById('close-reason').value='';
+  showNotif('Giorno di chiusura aggiunto','success');
+}
+function removeClosedDay(date){
+  D.closedDays=D.closedDays.filter(cd=>cd.date!==date);
+  save(); renderClosedDays(); buildDaysStrip();
+}
+function rebuildSlots(){
+  D.slotDuration=parseInt(document.getElementById('s-slot').value)||30;
+  D.slotOpen=document.getElementById('s-open').value||'09:00';
+  D.slotClose=document.getElementById('s-close').value||'19:00';
+  save(); rebuildAdminSlots(); buildDaysStrip();
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+function populateSettings(){
+  document.getElementById('s-name').value=D.info.name;
+  document.getElementById('s-tel').value=D.info.tel;
+  document.getElementById('s-ig').value=D.info.ig;
+  document.getElementById('s-addr').value=D.info.address;
+  document.getElementById('s-slot').value=D.slotDuration;
+  document.getElementById('s-open').value=D.slotOpen;
+  document.getElementById('s-close').value=D.slotClose;
+  document.getElementById('s-retention').value=D.archiveRetentionDays||30;
+  document.getElementById('s-auto-purge').checked=D.autoPurge!==false;
+  populateBreakSettings();
+}
+function saveInfo(){
+  D.info.name=document.getElementById('s-name').value;
+  D.info.tel=document.getElementById('s-tel').value;
+  D.info.ig=document.getElementById('s-ig').value;
+  D.info.address=document.getElementById('s-addr').value;
+  save(); renderPublic();
+  showNotif('Informazioni salvate','success');
+}
+function changePw(){
+  const p1=document.getElementById('s-pw').value,p2=document.getElementById('s-pw2').value;
+  if(!p1){showNotif('Inserisci la nuova password','danger');return;}
+  if(p1!==p2){showNotif('Le password non coincidono','danger');return;}
+  D.password=p1; save();
+  document.getElementById('s-pw').value='';
+  document.getElementById('s-pw2').value='';
+  showNotif('Password aggiornata','success');
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmtDate(d){
+  if(!d) return '-';
+  const [y,m,day]=d.split('-');
+  return `${day}/${m}/${y}`;
+}
+function statusLabel(s){
+  return s==='pending'?'In Attesa':s==='confirmed'?'Confermata':'Rifiutata';
+}
+function showNotif(msg,type=''){
+  const el=document.getElementById('notif');
+  el.textContent=msg;
+  el.className='notif show'+(type?' '+type:'');
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>el.classList.remove('show'),3500);
+}
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-bg').forEach(bg=>{
+  bg.addEventListener('click',e=>{ if(e.target===bg) bg.classList.remove('open'); });
+});
+
+// Scroll nav highlight
+const sections=document.querySelectorAll('section[id]');
+const navLinks=document.querySelectorAll('.nav-link');
+new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navLinks.forEach(l=>l.classList.remove('active'));
+      const lnk=document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+      if(lnk) lnk.classList.add('active');
+    }
+  });
+},{threshold:0.4}).observe && sections.forEach(s=>{
+  new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        navLinks.forEach(l=>l.classList.remove('active'));
+        const lnk=document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+        if(lnk) lnk.classList.add('active');
+      }
+    });
+  },{threshold:0.4}).observe(s);
+});
+</script>
+</body>
+</html>
